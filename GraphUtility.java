@@ -48,11 +48,8 @@ public class GraphUtility {
         Vertex<Type> dstVertex = new Vertex<>(destinations.get(i));
         graph.addEdge(srcVertex, dstVertex);
     }
-    if (!graph.areConnected(srcData, dstData)){
-        throw new IllegalArgumentException("The two vertexes are not connected");
-        
-    }
-    return new ArrayList<Type>();
+    
+    return graph.shortestPath(srcData, dstData);
             }
     public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
         List<Type> vertices = new ArrayList<>();

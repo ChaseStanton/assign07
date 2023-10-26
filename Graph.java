@@ -72,7 +72,7 @@ public class Graph<Type> {
         }
         return null;
     }
-    public List<Vertex<Type>> shortestPath(Type srcData, Type dstData) {
+    public List<Type> shortestPath(Type srcData, Type dstData) {
         Vertex<Type> src = findVertex(srcData);
         Vertex<Type> dst = findVertex(dstData);
     
@@ -84,7 +84,7 @@ public class Graph<Type> {
         int[] parent = new int[sourceNodes.size()];
     
         for (int i = 0; i < parent.length; i++) {
-            parent[i] = -1; 
+            parent[i] = -1;
         }
     
         int srcIndex = sourceNodes.indexOf(src);
@@ -96,7 +96,7 @@ public class Graph<Type> {
             int currentIndex = sourceNodes.indexOf(current);
     
             if (current == dst) {
-                return reconstructShortestPath(parent, srcIndex, currentIndex);
+                return reconstructShortestPathData(parent, srcIndex, currentIndex);
             }
     
             for (int i = 0; i < edges.size(); i++) {
@@ -114,19 +114,20 @@ public class Graph<Type> {
     
         throw new IllegalArgumentException("No path between the two vertices.");
     }
-
-    private List<Vertex<Type>> reconstructShortestPath(int[] parent, int srcIndex, int dstIndex) {
-        List<Vertex<Type>> path = new LinkedList<>();
+    
+    private List<Type> reconstructShortestPathData(int[] parent, int srcIndex, int dstIndex) {
+        List<Type> path = new ArrayList<>();
         int currentIndex = dstIndex;
-
+    
         while (currentIndex != srcIndex) {
-            path.add(0, sourceNodes.get(currentIndex));
+            path.add(0, sourceNodes.get(currentIndex).getData());
             currentIndex = parent[currentIndex];
         }
-
-        path.add(0, sourceNodes.get(srcIndex));
+    
+        path.add(0, sourceNodes.get(srcIndex).getData());
         return path;
     }
+    
 
     public static <Type> List<Type> topologicalSort(List<Type> verticesList, List<List<Type>> graph,
             List<Integer> inDegrees) {
