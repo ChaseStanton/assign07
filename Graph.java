@@ -1,13 +1,11 @@
 package assign07;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.Stack;
+import java.util.Set;
 
 public class Graph<Type> {
     private List<Vertex<Type>> sourceNodes;
@@ -27,40 +25,66 @@ public class Graph<Type> {
         edges.add(edge);
     }
 
-    public boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
-            throws IllegalArgumentException {
-        if (sources.size() != destinations.size()) {
-            throw new IllegalArgumentException("The sizes of the sources and destinations lists must be the same.");
+    public boolean areConnected(Type srcData, Type dstData) {
+        Vertex<Type> src = findVertex(srcData);
+        Vertex<Type> dst = findVertex(dstData);
+
+        if (src == null || dst == null) {
+            throw new IllegalArgumentException("No such vertices in the graph.");
         }
 
-        Map<Type, List<Type>> adj = new HashMap<>();
-        for (int i = 0; i < sources.size(); i++) {
-            adj.computeIfAbsent(sources.get(i), k -> new ArrayList<>()).add(destinations.get(i));
+        Set<Vertex<Type>> visited = new HashSet<>();
+
+        return depthFirstSearch(src, dst, visited);
+    }
+
+    private boolean depthFirstSearch(Vertex<Type> current, Vertex<Type> target, Set<Vertex<Type>> visited) {
+        if (current == target) {
+            return true;
         }
-        List<Type> visited = new ArrayList<>();
-        Stack<Type> queue = new Stack<>();
 
-        queue.push(srcData);
-        while (!queue.isEmpty()) {
-            Type vertex = queue.pop();
-            visited.add(vertex);
+        visited.add(current);
 
-            if (vertex.equals(dstData)) {
-                return true;
-            }
-
-            List<Type> neighbors = adj.get(vertex);
-            if (neighbors != null) {
-                for (Type neighbor : neighbors) {
-                    if (!visited.contains(neighbor)) {
-                        queue.push(neighbor);
+        for (Edge<Type> edge : edges) {
+            if (edge.getSRC() == current) {
+                Vertex<Type> neighbor = edge.getDST();
+                if (!visited.contains(neighbor)) {
+                    if (depthFirstSearch(neighbor, target, visited)) {
+                        return true;
                     }
                 }
             }
         }
-        throw new IllegalArgumentException("No connection between source and desination.");
+
+        return false;
     }
 
+    private Vertex<Type> findVertex(Type data) {
+        for (Vertex<Type> vertex : sourceNodes) {
+            if (vertex.getData().equals(data)) {
+                return vertex;
+            }
+        }
+        for (Vertex<Type> vertex : destinationNodes) {
+            if (vertex.getData().equals(data)) {
+                return vertex;
+            }
+        }
+        return null;
+    }
+
+    private List<Vertex<Type>> reconstructShortestPath(int[] parent, int srcIndex, int dstIndex) {
+        List<Vertex<Type>> path = new LinkedList<>();
+        int currentIndex = dstIndex;
+
+        while (currentIndex != srcIndex) {
+            path.add(0, sourceNodes.get(currentIndex));
+            currentIndex = parent[currentIndex];
+        }
+
+        path.add(0, sourceNodes.get(srcIndex));
+        return path;
+    }
 
     public static <Type> List<Type> topologicalSort(List<Type> verticesList, List<List<Type>> graph,
             List<Integer> inDegrees) {
@@ -92,16 +116,6 @@ public class Graph<Type> {
 
         return result;
     }
-    public boolean isConnected(Vertex<Type> src, Vertex<Type> dst) {
-        return GraphUtility.areConnected(sourceNodes, destinationNodes, src, dst);
-    }
-
-    public List<Vertex<Type>> shortestPath(Vertex<Type> src, Vertex<Type> dst) {
-        return GraphUtility.shortestPath(sourceNodes, destinationNodes, src, dst);
-    }
-
-   
-    
 
     @Override
     public String toString() {

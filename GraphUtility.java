@@ -16,15 +16,44 @@ import java.util.Scanner;
  */
 public class GraphUtility {
     public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
-            throws IllegalArgumentException {
-        return areConnected(sources, destinations, srcData, dstData);
+        throws IllegalArgumentException {
+    Graph<Type> graph = new Graph<>();
+    
+    if (sources.size() != destinations.size()) {
+        throw new IllegalArgumentException("Invalid input: sources and destinations must have the same size.");
     }
+    
+    for (int i = 0; i < sources.size(); i++) {
+        Vertex<Type> srcVertex = new Vertex<>(sources.get(i));
+        Vertex<Type> dstVertex = new Vertex<>(destinations.get(i));
+        graph.addEdge(srcVertex, dstVertex);
+    }
+    if (!graph.areConnected(srcData, dstData)){
+        throw new IllegalArgumentException("The two vertexes are not connected");   
+    }
+    return graph.areConnected(srcData, dstData);
+}
+
 
     public static <Type> List<Type> shortestPath(List<Type> sources, List<Type> destinations, Type srcData,
             Type dstData) throws IllegalArgumentException {
-        return shortestPath(sources, destinations, srcData, dstData);
+                Graph<Type> graph = new Graph<>();
+    
+    if (sources.size() != destinations.size()) {
+        throw new IllegalArgumentException("Invalid input: sources and destinations must have the same size.");
     }
-
+    
+    for (int i = 0; i < sources.size(); i++) {
+        Vertex<Type> srcVertex = new Vertex<>(sources.get(i));
+        Vertex<Type> dstVertex = new Vertex<>(destinations.get(i));
+        graph.addEdge(srcVertex, dstVertex);
+    }
+    if (!graph.areConnected(srcData, dstData)){
+        throw new IllegalArgumentException("The two vertexes are not connected");
+        
+    }
+    return new ArrayList<Type>();
+            }
     public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
         List<Type> vertices = new ArrayList<>();
         List<List<Type>> graph = new ArrayList<>();
