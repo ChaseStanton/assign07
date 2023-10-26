@@ -72,6 +72,48 @@ public class Graph<Type> {
         }
         return null;
     }
+    public List<Vertex<Type>> shortestPath(Type srcData, Type dstData) {
+        Vertex<Type> src = findVertex(srcData);
+        Vertex<Type> dst = findVertex(dstData);
+    
+        if (src == null || dst == null) {
+            throw new IllegalArgumentException("No such vertices in the graph.");
+        }
+    
+        Queue<Vertex<Type>> queue = new LinkedList<>();
+        int[] parent = new int[sourceNodes.size()];
+    
+        for (int i = 0; i < parent.length; i++) {
+            parent[i] = -1; 
+        }
+    
+        int srcIndex = sourceNodes.indexOf(src);
+        queue.add(src);
+        parent[srcIndex] = srcIndex;
+    
+        while (!queue.isEmpty()) {
+            Vertex<Type> current = queue.poll();
+            int currentIndex = sourceNodes.indexOf(current);
+    
+            if (current == dst) {
+                return reconstructShortestPath(parent, srcIndex, currentIndex);
+            }
+    
+            for (int i = 0; i < edges.size(); i++) {
+                Edge<Type> edge = edges.get(i);
+                if (edge.getSRC() == current) {
+                    Vertex<Type> neighbor = edge.getDST();
+                    int neighborIndex = sourceNodes.indexOf(neighbor);
+                    if (parent[neighborIndex] == -1) {
+                        queue.add(neighbor);
+                        parent[neighborIndex] = currentIndex;
+                    }
+                }
+            }
+        }
+    
+        throw new IllegalArgumentException("No path between the two vertices.");
+    }
 
     private List<Vertex<Type>> reconstructShortestPath(int[] parent, int srcIndex, int dstIndex) {
         List<Vertex<Type>> path = new LinkedList<>();
