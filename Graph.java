@@ -3,12 +3,10 @@ package assign07;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 public class Graph<Type> {
 	private HashMap<Type, Vertex<Type>> vertices;  
@@ -40,12 +38,11 @@ public class Graph<Type> {
 		vertex1.addEdge(vertex2);
 	}
     public boolean areConnected(Type srcData, Type dstData) {
+        if (!vertices.containsKey(srcData) || !vertices.containsKey(dstData)) {
+            throw new IllegalArgumentException("Source or destination vertex not found in the graph");
+        }
         Vertex<Type> src = vertices.get(srcData);
         Vertex<Type> dst = vertices.get(dstData);
-
-        if (src == null || dst == null) {
-            return false;
-        }
 
         depthFirstSearch(src);
         return dst.isVisited();
