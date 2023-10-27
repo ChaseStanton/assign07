@@ -1,132 +1,121 @@
 package assign07;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
 public class Graph<Type> {
-    private List<Vertex<Type>> sourceNodes;
-    private List<Vertex<Type>> destinationNodes;
-    private List<Edge<Type>> edges;
+	private HashMap<Type, Vertex<Type>> vertices;  
 
     public Graph() {
-        this.sourceNodes = new ArrayList<>();
-        this.destinationNodes = new ArrayList<>();
-        this.edges = new ArrayList<>();
+        this.vertices = new HashMap<Type, Vertex<Type>>();
     }
 
-    public void addEdge(Vertex<Type> source, Vertex<Type> destination) {
-        sourceNodes.add(source);
-        destinationNodes.add(destination);
-        Edge<Type> edge = new Edge<>(source, destination);
-        edges.add(edge);
-    }
+    public void addEdge(Type name1, Type name2) {
+		Vertex<Type> vertex1;
+		// if vertex already exists in graph, get its object
+		if(vertices.containsKey(name1))
+			vertex1 = vertices.get(name1);
+		// else, create a new object and add to graph
+		else {
+			vertex1 = new Vertex<Type>(name1);
+			vertices.put(name1, vertex1);
+		}
 
+		Vertex<Type> vertex2;
+		if(vertices.containsKey(name2))
+			vertex2 = vertices.get(name2);
+		else {
+			vertex2 = new Vertex<Type>(name2);
+			vertices.put(name2, vertex2);
+		}
+
+		// add new directed edge from vertex1 to vertex2
+		vertex1.addEdge(vertex2);
+	}
     public boolean areConnected(Type srcData, Type dstData) {
-        Vertex<Type> src = findVertex(srcData);
-        Vertex<Type> dst = findVertex(dstData);
+        Vertex<Type> src = vertices.get(srcData);
+        Vertex<Type> dst = vertices.get(dstData);
 
         if (src == null || dst == null) {
-            throw new IllegalArgumentException("No such vertices in the graph.");
+            return false;
         }
 
-        Set<Vertex<Type>> visited = new HashSet<>();
-
-        return depthFirstSearch(src, dst, visited);
+        depthFirstSearch(src);
+        return dst.isVisited();
     }
 
-    private boolean depthFirstSearch(Vertex<Type> current, Vertex<Type> target, Set<Vertex<Type>> visited) {
-        if (current == target) {
-            return true;
+    
+
+    public void depthFirstSearch(Vertex<Type> s) {
+        // Initialize distances
+        for (Vertex<Type> v : vertices.values()) {
+            v.setDistanceFromStart(Integer.MAX_VALUE);
         }
-
-        visited.add(current);
-
-        for (Edge<Type> edge : edges) {
-            if (edge.getSRC() == current) {
-                Vertex<Type> neighbor = edge.getDST();
-                if (!visited.contains(neighbor)) {
-                    if (depthFirstSearch(neighbor, target, visited)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        s.setDistanceFromStart(0);
+        
+        depthFirstSearchHelper(s);
     }
-
-    private Vertex<Type> findVertex(Type data) {
-        for (Vertex<Type> vertex : sourceNodes) {
-            if (vertex.getData().equals(data)) {
-                return vertex;
+    private void depthFirstSearchHelper(Vertex<Type> x) {
+        for (Vertex<Type> w : x.getNeighbors()) {
+            if (w.getDistanceFromStart() == Integer.MAX_VALUE) {
+                w.setDistanceFromStart(x.getDistanceFromStart() + 1); // Increment hop count
+                w.setPrevious(x);
+                depthFirstSearchHelper(w);
             }
         }
-        for (Vertex<Type> vertex : destinationNodes) {
-            if (vertex.getData().equals(data)) {
-                return vertex;
-            }
-        }
-        return null;
     }
+    
     public List<Type> shortestPath(Type srcData, Type dstData) {
-        Vertex<Type> src = findVertex(srcData);
-        Vertex<Type> dst = findVertex(dstData);
-    
-        if (src == null || dst == null) {
-            throw new IllegalArgumentException("No such vertices in the graph.");
-        }
-    
+    	Vertex<Type> src = vertices.get(srcData);
+        Vertex<Type> dst = vertices.get(dstData);
+        
         Queue<Vertex<Type>> queue = new LinkedList<>();
-        int[] parent = new int[sourceNodes.size()];
-    
-        for (int i = 0; i < parent.length; i++) {
-            parent[i] = -1;
-        }
-    
-        int srcIndex = sourceNodes.indexOf(src);
+        Map<Vertex<Type>, Vertex<Type>> previousVertices = new HashMap<>();
+
         queue.add(src);
-        parent[srcIndex] = srcIndex;
-    
+        previousVertices.put(src, null);
+
         while (!queue.isEmpty()) {
             Vertex<Type> current = queue.poll();
-            int currentIndex = sourceNodes.indexOf(current);
-    
             if (current == dst) {
-                return reconstructShortestPathData(parent, srcIndex, currentIndex);
+                // Reconstruct and return the shortest path
+                return reconstructShortestPath(src, dst, previousVertices);
             }
-    
-            for (int i = 0; i < edges.size(); i++) {
-                Edge<Type> edge = edges.get(i);
-                if (edge.getSRC() == current) {
-                    Vertex<Type> neighbor = edge.getDST();
-                    int neighborIndex = sourceNodes.indexOf(neighbor);
-                    if (parent[neighborIndex] == -1) {
-                        queue.add(neighbor);
-                        parent[neighborIndex] = currentIndex;
-                    }
+
+            for (Vertex<Type> neighbor : current.getNeighbors()) {
+                if (!previousVertices.containsKey(neighbor)) {
+                    queue.add(neighbor);
+                    previousVertices.put(neighbor, current);
                 }
             }
         }
-    
+
         throw new IllegalArgumentException("No path between the two vertices.");
     }
+        
     
-    private List<Type> reconstructShortestPathData(int[] parent, int srcIndex, int dstIndex) {
-        List<Type> path = new ArrayList<>();
-        int currentIndex = dstIndex;
+        
     
-        while (currentIndex != srcIndex) {
-            path.add(0, sourceNodes.get(currentIndex).getData());
-            currentIndex = parent[currentIndex];
-        }
-    
-        path.add(0, sourceNodes.get(srcIndex).getData());
-        return path;
+private List<Type> reconstructShortestPath(Vertex<Type> src, Vertex<Type> dst, Map<Vertex<Type>, Vertex<Type>> previousVertices) {
+    List<Type> path = new ArrayList<>();
+    Vertex<Type> current = dst;
+
+    while (current != null) {
+        path.add(current.getData());
+        current = previousVertices.get(current);
     }
+
+    Collections.reverse(path);
+    return path;
+}
+    
     
 
     public static <Type> List<Type> topologicalSort(List<Type> verticesList, List<List<Type>> graph,
@@ -161,11 +150,12 @@ public class Graph<Type> {
     }
 
     @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Edge<Type> edge : edges) {
-            stringBuilder.append(edge.getSRC().getData()).append(" -> ").append(edge.getDST().getData()).append("\n");
-        }
-        return stringBuilder.toString();
-    }
+    	public String toString() {
+    		StringBuilder result = new StringBuilder();
+    		
+    		for(Vertex<Type> v : vertices.values()) 
+    			result.append(v + "\n");
+    		
+    		return result.toString();
+    	}
 }

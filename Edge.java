@@ -1,23 +1,20 @@
 package assign07;
 
 public class Edge<Type> {
-	private Vertex<Type> src, dst;
+	private Vertex<Type> dst;
 
-	public Edge(Vertex<Type> src, Vertex<Type> dst) {
-		this.src = src;
+	public Edge(Vertex<Type> dst) {
 		this.dst = dst;
 	}
 
-	public Vertex<Type> getSRC() {
-		return this.src;
-	}
+	
 
-	public Vertex<Type> getDST() {
+	public Vertex<Type> getOtherVertex() {
 		return this.dst;
 	}
 
 	@Override
 	public String toString() {
-		return src.getData() + " -> " + dst.getData();
+		return this.dst.toString();
 	}
 }
