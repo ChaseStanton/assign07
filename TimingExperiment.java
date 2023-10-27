@@ -23,25 +23,23 @@ public class TimingExperiment {
         }
     }
 
-
     private static Graph<String> createGraph(int N) {
         Graph<String> graph = new Graph<>();
         ArrayList<String> sources = new ArrayList<>();
         ArrayList<String> destinations = new ArrayList<>();
-    
+
         for (int i = 0; i < N; i++) {
             String source = "Node" + i;
             String destination = "Node" + (i + 1);
-    
+
             sources.add(source);
             destinations.add(destination);
-    
+
             graph.addEdge(source, destination);
         }
-    
+
         return graph;
     }
-    
 
     private static long measureAreConnected(Graph<String> graph) {
         String srcData = "Node0";
@@ -49,7 +47,7 @@ public class TimingExperiment {
         long startTime = System.nanoTime();
         boolean areConnected = GraphUtility.areConnected(graph, srcData, dstData);
         long endTime = System.nanoTime();
-        return (endTime - startTime); 
+        return (endTime - startTime);
     }
 
     private static long measureShortestPath(Graph<String> graph) {
@@ -58,7 +56,7 @@ public class TimingExperiment {
         long startTime = System.nanoTime();
         List<String> shortestPath = GraphUtility.shortestPath(graph, srcData, dstData);
         long endTime = System.nanoTime();
-        return (endTime - startTime); 
+        return (endTime - startTime);
     }
 
     private static long measureSort(Graph<String> graph) {

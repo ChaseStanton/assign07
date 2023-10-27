@@ -3,7 +3,8 @@ package assign07;
 import java.util.*;
 
 /**
- * Represents a generic directed graph and provides various operations and algorithms for working with the graph.
+ * Represents a generic directed graph and provides various operations and
+ * algorithms for working with the graph.
  *
  * @param <Type> the data type of the vertices in the graph
  */
@@ -33,7 +34,8 @@ class Graph<Type> {
      * @param srcData the source vertex
      * @param dstData the destination vertex
      * @return true if there is a path, false otherwise
-     * @throws IllegalArgumentException if the source or destination vertex is not found in the graph
+     * @throws IllegalArgumentException if the source or destination vertex is not
+     *                                  found in the graph
      */
     public boolean areConnected(Type srcData, Type dstData) {
         if (!adjList.containsKey(srcData) || !adjList.containsKey(dstData)) {
@@ -70,7 +72,8 @@ class Graph<Type> {
      * @param srcData the source vertex
      * @param dstData the destination vertex
      * @return a list representing the shortest path
-     * @throws IllegalArgumentException if the source or destination vertex is not found in the graph
+     * @throws IllegalArgumentException if the source or destination vertex is not
+     *                                  found in the graph
      * @throws IllegalArgumentException if no path is found between the two vertices
      */
     public List<Type> shortestPath(Type srcData, Type dstData) {

@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Contains several methods for solving problems on generic, directed, unweighted, sparse graphs.
+ * Contains several methods for solving problems on generic, directed,
+ * unweighted, sparse graphs.
  * 
  * @author Prof. Parker & Reece Kalmar & Chase Stanton
  * @version October 27, 2023
@@ -44,8 +45,8 @@ public class GraphUtility {
     /**
      * Performs topological sorting on the vertices of the given graph.
      *
-     * @param graph   the graph to sort
-     * @param <Type>  the data type of the vertices in the graph
+     * @param graph  the graph to sort
+     * @param <Type> the data type of the vertices in the graph
      * @return a list representing the sorted vertices
      */
     public static <Type> List<Type> sort(Graph<Type> graph) {
@@ -54,7 +55,8 @@ public class GraphUtility {
     }
 
     /**
-     * Builds "sources" and "destinations" lists according to the edges specified in the given DOT file (e.g., "a -> b").
+     * Builds "sources" and "destinations" lists according to the edges specified in
+     * the given DOT file (e.g., "a -> b").
      * Assumes that the vertex data type is String.
      * 
      * Accepts many valid "digraph" DOT files (see examples posted on Canvas).
@@ -62,11 +64,13 @@ public class GraphUtility {
      * - Accepts one edge per line or edges terminated with ;
      * - Does not accept attributes in [] (e.g., [label = "a label"])
      *
-     * @param filename      the name of the DOT file
-     * @param sources       an empty ArrayList; when the method returns, it is a valid "sources" list that can be passed
-     *                      to the public methods in this class
-     * @param destinations  an empty ArrayList; when the method returns, it is a valid "destinations" list that can be
-     *                      passed to the public methods in this class
+     * @param filename     the name of the DOT file
+     * @param sources      an empty ArrayList; when the method returns, it is a
+     *                     valid "sources" list that can be passed
+     *                     to the public methods in this class
+     * @param destinations an empty ArrayList; when the method returns, it is a
+     *                     valid "destinations" list that can be
+     *                     passed to the public methods in this class
      */
     public static void buildListsFromDot(String filename, ArrayList<String> sources, ArrayList<String> destinations) {
 
@@ -100,7 +104,8 @@ public class GraphUtility {
             System.exit(0);
         }
 
-        // Look for the edge operator -> and determine the source and destination vertices for each edge.
+        // Look for the edge operator -> and determine the source and destination
+        // vertices for each edge.
         while (scan.hasNext()) {
             String[] substring = line.split(edgeOp);
 
