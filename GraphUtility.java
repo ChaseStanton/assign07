@@ -15,20 +15,23 @@ import java.util.Scanner;
  * @version October 19, 2023
  */
 public class GraphUtility {
-	/**
-	 * This method is a driver method that uses depth first search to determine if there is a path from the vertex with srcData to
-	 * the vertex with dstData
-	 * @param <Type> - Generic
-	 * @param sources - The list of sources
-	 * @param destinations - The list of destinations
-	 * @param srcData - The data from the source vertex
-	 * @param dstData - the data from the destination vertex
-	 * @return true if there is a path, false if there isn't
-	 * @throws IllegalArgumentException if the source list and destination list don't have the same size
-	 */
+    /**
+     * This method is a driver method that uses depth first search to determine if
+     * there is a path from the vertex with srcData to
+     * the vertex with dstData
+     * 
+     * @param <Type>       - Generic
+     * @param sources      - The list of sources
+     * @param destinations - The list of destinations
+     * @param srcData      - The data from the source vertex
+     * @param dstData      - the data from the destination vertex
+     * @return true if there is a path, false if there isn't
+     * @throws IllegalArgumentException if the source list and destination list
+     *                                  don't have the same size
+     */
     public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
-        throws IllegalArgumentException {
-    	Graph<Type> graph = new Graph<>();
+            throws IllegalArgumentException {
+        Graph<Type> graph = new Graph<>();
 
         if (sources.size() != destinations.size()) {
             throw new IllegalArgumentException("Invalid input: sources and destinations must have the same size.");
@@ -42,19 +45,22 @@ public class GraphUtility {
     }
 
     /**
-     * This method is a driver method that uses breadth first search to find the shortest path from the vertex with srcData to the
+     * This method is a driver method that uses breadth first search to find the
+     * shortest path from the vertex with srcData to the
      * vertex with dstData
-     * @param <Type> - Generic
-     * @param sources - The list of sources
+     * 
+     * @param <Type>       - Generic
+     * @param sources      - The list of sources
      * @param destinations - The list of destinations
-     * @param srcData - The data from the source vertex
-     * @param dstData - The data from the destination vertex
+     * @param srcData      - The data from the source vertex
+     * @param dstData      - The data from the destination vertex
      * @return the shortest path from the two vertexes
-     * @throws IllegalArgumentException if sources and destinations are not the same size
+     * @throws IllegalArgumentException if sources and destinations are not the same
+     *                                  size
      */
     public static <Type> List<Type> shortestPath(List<Type> sources, List<Type> destinations, Type srcData,
             Type dstData) throws IllegalArgumentException {
-    	Graph<Type> graph = new Graph<>();
+        Graph<Type> graph = new Graph<>();
 
         if (sources.size() != destinations.size()) {
             throw new IllegalArgumentException("Invalid input: sources and destinations must have the same size.");
@@ -66,11 +72,13 @@ public class GraphUtility {
 
         return graph.shortestPath(srcData, dstData);
     }
-    
+
     /**
-     * This method is a driver method that uses topologicalSort to generate a sorted ordering of the vertices in the graph
-     * @param <Type> - Generic
-     * @param sources - The list of sources
+     * This method is a driver method that uses topologicalSort to generate a sorted
+     * ordering of the vertices in the graph
+     * 
+     * @param <Type>       - Generic
+     * @param sources      - The list of sources
      * @param destinations - The list of destinations
      * @return the sorted list
      * @throws IllegalArgumentException if the graph contains a cycle
@@ -88,14 +96,16 @@ public class GraphUtility {
         return result;
 
     }
+
     /**
      * This method makes a graph that is used in the sort method
-     * @param <Type> - Generic
-     * @param sources -  The list of sources
+     * 
+     * @param <Type>       - Generic
+     * @param sources      - The list of sources
      * @param destinations - The list of destinations
-     * @param vertices - The list of vertices
-     * @param graph - The graph to be added to
-     * @param inDegrees - The indegrees of the list
+     * @param vertices     - The list of vertices
+     * @param graph        - The graph to be added to
+     * @param inDegrees    - The indegrees of the list
      */
     private static <Type> void makeGraph(List<Type> sources, List<Type> destinations, List<Type> vertices,
             List<List<Type>> graph, List<Integer> inDegrees) {
