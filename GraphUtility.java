@@ -11,10 +11,21 @@ import java.util.Scanner;
  * unweighted,
  * sparse graphs.
  *
- * @author Prof. Parker & ??
+ * @author Prof. Parker & Chase Stanton & Reece Kalmar
  * @version October 19, 2023
  */
 public class GraphUtility {
+	/**
+	 * This method is a driver method that uses depth first search to determine if there is a path from the vertex with srcData to
+	 * the vertex with dstData
+	 * @param <Type> - Generic
+	 * @param sources - The list of sources
+	 * @param destinations - The list of destinations
+	 * @param srcData - The data from the source vertex
+	 * @param dstData - the data from the destination vertex
+	 * @return true if there is a path, false if there isn't
+	 * @throws IllegalArgumentException if the source list and destination list don't have the same size
+	 */
     public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
         throws IllegalArgumentException {
     	Graph<Type> graph = new Graph<>();
@@ -30,7 +41,17 @@ public class GraphUtility {
         return graph.areConnected(srcData, dstData);
     }
 
-
+    /**
+     * This method is a driver method that uses breadth first search to find the shortest path from the vertex with srcData to the
+     * vertex with dstData
+     * @param <Type> - Generic
+     * @param sources - The list of sources
+     * @param destinations - The list of destinations
+     * @param srcData - The data from the source vertex
+     * @param dstData - The data from the destination vertex
+     * @return the shortest path from the two vertexes
+     * @throws IllegalArgumentException if sources and destinations are not the same size
+     */
     public static <Type> List<Type> shortestPath(List<Type> sources, List<Type> destinations, Type srcData,
             Type dstData) throws IllegalArgumentException {
     	Graph<Type> graph = new Graph<>();
@@ -46,7 +67,14 @@ public class GraphUtility {
         return graph.shortestPath(srcData, dstData);
     }
     
-            
+    /**
+     * This method is a driver method that uses topologicalSort to generate a sorted ordering of the vertices in the graph
+     * @param <Type> - Generic
+     * @param sources - The list of sources
+     * @param destinations - The list of destinations
+     * @return the sorted list
+     * @throws IllegalArgumentException if the graph contains a cycle
+     */
     public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
         List<Type> vertices = new ArrayList<>();
         List<List<Type>> graph = new ArrayList<>();
@@ -60,7 +88,15 @@ public class GraphUtility {
         return result;
 
     }
-
+    /**
+     * This method makes a graph that is used in the sort method
+     * @param <Type> - Generic
+     * @param sources -  The list of sources
+     * @param destinations - The list of destinations
+     * @param vertices - The list of vertices
+     * @param graph - The graph to be added to
+     * @param inDegrees - The indegrees of the list
+     */
     private static <Type> void makeGraph(List<Type> sources, List<Type> destinations, List<Type> vertices,
             List<List<Type>> graph, List<Integer> inDegrees) {
         for (int i = 0; i < sources.size(); i++) {
