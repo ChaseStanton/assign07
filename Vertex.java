@@ -1,62 +1,115 @@
 package assign07;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Sets up a vertex object to be used in the graph class.
+ *
+ * @author Reece Kalmar, Chase Stanton
+ * @version October 26th, 2023
+ */
 public class Vertex<Type> {
-    private Type data;
-    private boolean visited;
-    private int distanceFromStart;
-    private Vertex<Type> previous;
-    private List<Vertex<Type>> adj;
+	private Type data;
+	private boolean visited;
+	private int distanceFromStart;
+	private Vertex<Type> previous;
+	private List<Vertex<Type>> adj;
 
-    public Vertex(Type data) {
-        this.data = data;
-        this.visited = false;
-        this.distanceFromStart = Integer.MAX_VALUE; 
-        this.previous = null;
-        this.adj = new ArrayList<>();
-    }
+	/**
+	 * Constructor for the vertex class, takes and stores data as a vertice
+	 * 
+	 * @param data - data to be stored
+	 */
+	public Vertex(Type data) {
+		this.data = data;
+		this.visited = false;
+		this.distanceFromStart = Integer.MAX_VALUE;
+		this.previous = null;
+		this.adj = new ArrayList<>();
+	}
 
-    public void addEdge(Vertex<Type> vertex) {
-        adj.add(vertex);
-    }
+	/**
+	 * Adds an edge to the adjadcency list completing a source/destination vertix
+	 * connection
+	 * 
+	 * @param vertex - the vertex to be added to the adjacency
+	 */
+	public void addEdge(Vertex<Type> vertex) {
+		adj.add(vertex);
+	}
 
-    public Type getData() {
-        return data;
-    }
+	/**
+	 * Getter method to retrieve a vertices data
+	 * 
+	 * @return - data stored in a vertici
+	 */
+	public Type getData() {
+		return data;
+	}
 
-    public boolean isVisited() {
-        return visited;
-    }
+	/**
+	 * returns the visited boolean data from a vertice
+	 * 
+	 * @return - if the vertici has been visited
+	 */
+	public boolean isVisited() {
+		return visited;
+	}
 
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
+	/**
+	 * Setter method for the visited data in a vertice
+	 * 
+	 * @param visited - if a vertici has been visited or not
+	 */
+	public void setVisited(boolean visited) {
+		this.visited = visited;
+	}
 
-    public int getDistanceFromStart() {
-        return distanceFromStart;
-    }
+	/**
+	 * Getter method to retrieve how far away a vertice is from the source vetex
+	 * 
+	 * @return - distance in integer
+	 */
+	public int getDistanceFromStart() {
+		return distanceFromStart;
+	}
 
-    public void setDistanceFromStart(int distance) {
-        this.distanceFromStart = distance;
-    }
+	/**
+	 * Setter method for the distance from start variable
+	 * 
+	 * @param distance - how far from the source node the vertice is from the vertex
+	 *                 in integer
+	 */
+	public void setDistanceFromStart(int distance) {
+		this.distanceFromStart = distance;
+	}
 
-    public Vertex<Type> getPrevious() {
-        return previous;
-    }
+	/**
+	 * Getter method to retrieve the previous value or reverse traverse a directed
+	 * graph once
+	 * 
+	 * @return - the past vertici\e that is connected to the vertex
+	 */
+	public Vertex<Type> getPrevious() {
+		return previous;
+	}
 
-    public void setPrevious(Vertex<Type> previous) {
-        this.previous = previous;
-    }
+	/**
+	 * Setter method for the previous variable that is to be stored
+	 * 
+	 * @param previous - the past vertice
+	 */
+	public void setPrevious(Vertex<Type> previous) {
+		this.previous = previous;
+	}
 
-    public List<Vertex<Type>> getNeighbors() {
-        return adj;
-    }
-
-    @Override
-    public String toString() {
-        return data.toString();
-    }
+	/**
+	 * Getter method to retrieve the list of all the vertices
+	 * 
+	 * @return - List of vertices connected to the current vertex
+	 */
+	public List<Vertex<Type>> getNeighbors() {
+		return adj;
+	}
 }
