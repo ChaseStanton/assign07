@@ -23,6 +23,9 @@ public class Graph<Type> {
     public Graph() {
         this.vertices = new HashMap<Type, Vertex<Type>>();
     }
+    public HashMap<Type, Vertex<Type>> getVertices(){
+        return this.vertices;
+    }
 
     /**
      * This method adds a directed edge to the graph from name1 to name2

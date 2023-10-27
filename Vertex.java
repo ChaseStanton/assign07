@@ -28,7 +28,7 @@ public class Vertex<Type> {
 		this.previous = null;
 		this.adj = new ArrayList<>();
 	}
-
+	
 	/**
 	 * Adds an edge to the adjadcency list completing a source/destination vertix
 	 * connection
