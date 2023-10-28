@@ -45,7 +45,7 @@ public class TimingExperiment {
         String srcData = "Node0";
         String dstData = "Node" + (graph.sortVertices().size() - 1);
         long startTime = System.nanoTime();
-        boolean areConnected = GraphUtility.areConnected(graph, srcData, dstData);
+        boolean areConnected = graph.areConnected(srcData, dstData);
         long endTime = System.nanoTime();
         return (endTime - startTime);
     }
@@ -54,14 +54,14 @@ public class TimingExperiment {
         String srcData = "Node0";
         String dstData = "Node" + (graph.sortVertices().size() - 1);
         long startTime = System.nanoTime();
-        List<String> shortestPath = GraphUtility.shortestPath(graph, srcData, dstData);
+        List<String> shortestPath = graph.shortestPath(srcData, dstData);
         long endTime = System.nanoTime();
         return (endTime - startTime);
     }
 
     private static long measureSort(Graph<String> graph) {
         long startTime = System.nanoTime();
-        List<String> sortedVertices = GraphUtility.sort(graph);
+        List<String> sortedVertices = graph.sortVertices();
         long endTime = System.nanoTime();
         return (endTime - startTime);
     }

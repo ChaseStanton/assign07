@@ -46,6 +46,15 @@ class Graph<Type> {
         return dfs(srcData, dstData, visited);
     }
 
+    /**
+     * Checks if there is a path between two vertices in the graph using depth-first
+     * search.
+     *
+     * @param currentVertex the current vertex being visited
+     * @param targetVertex  the target vertex to reach
+     * @param visited       a set of visited vertices to avoid cycles
+     * @return true if there is a path, false otherwise
+     */
     private boolean dfs(Type currentVertex, Type targetVertex, Set<Type> visited) {
         if (currentVertex.equals(targetVertex)) {
             return true;
@@ -77,9 +86,6 @@ class Graph<Type> {
      * @throws IllegalArgumentException if no path is found between the two vertices
      */
     public List<Type> shortestPath(Type srcData, Type dstData) {
-        if (!adjList.containsKey(srcData) || !adjList.containsKey(dstData)) {
-            throw new IllegalArgumentException("Vertex not found in the graph");
-        }
 
         Queue<Type> queue = new LinkedList<>();
         Map<Type, Type> previousVertex = new HashMap<>();
@@ -137,7 +143,6 @@ class Graph<Type> {
             for (Type neighbor : adjList.get(vertex)) {
                 int neighborIndex = getIndex(neighbor);
                 if (neighborIndex == -1) {
-                    // Handle the case where the neighbor is not found
                     verticesWithMissingNeighbors.add(vertex);
                 } else {
                     inDegrees[neighborIndex]++;
@@ -174,6 +179,12 @@ class Graph<Type> {
         return sortedVertices;
     }
 
+    /**
+     * Helper method to get the index of a vertex in the graph's adjacency list.
+     *
+     * @param vertex the vertex to find the index of
+     * @return the index of the vertex, or -1 if not found
+     */
     private int getIndex(Type vertex) {
         int index = 0;
         for (Type key : adjList.keySet()) {
@@ -182,7 +193,6 @@ class Graph<Type> {
             }
             index++;
         }
-        // Handle the case where the vertex is not found
         return -1;
     }
 }

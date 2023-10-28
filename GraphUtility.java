@@ -14,44 +14,87 @@ import java.util.Scanner;
  * @version October 27, 2023
  */
 public class GraphUtility {
-
     /**
      * Checks if there is a path between two vertices in the given graph.
      *
-     * @param graph   the graph to check
-     * @param srcData the source vertex
-     * @param dstData the destination vertex
-     * @param <Type>  the data type of the vertices in the graph
+     * @param sources      a list of source vertices
+     * @param destinations a list of destination vertices
+     * @param srcData      the source vertex to check
+     * @param dstData      the destination vertex to check
+     * @param <Type>       the data type of the vertices in the graph
      * @return true if there is a path, false otherwise
+     * @throws IllegalArgumentException if the sources and destinations lists have
+     *                                  different sizes
      */
-    public static <Type> boolean areConnected(Graph<Type> graph, Type srcData, Type dstData) {
+    public static <Type> boolean areConnected(List<Type> sources, List<Type> destinations, Type srcData, Type dstData)
+            throws IllegalArgumentException {
+        if (sources.size() != destinations.size()) {
+            throw new IllegalArgumentException("Sources list and destination list must be the same size");
+        }
+
+        Graph<Type> graph = buildGraphFromLists(sources, destinations);
         return graph.areConnected(srcData, dstData);
     }
 
     /**
      * Finds the shortest path between two vertices in the given graph.
      *
-     * @param graph   the graph to search
-     * @param srcData the source vertex
-     * @param dstData the destination vertex
-     * @param <Type>  the data type of the vertices in the graph
+     * @param sources      a list of source vertices
+     * @param destinations a list of destination vertices
+     * @param srcData      the source vertex for which to find the shortest path
+     * @param dstData      the destination vertex for which to find the shortest
+     *                     path
+     * @param <Type>       the data type of the vertices in the graph
      * @return a list representing the shortest path
+     * @throws IllegalArgumentException if the sources and destinations lists have
+     *                                  different sizes
      */
-    public static <Type> List<Type> shortestPath(Graph<Type> graph, Type srcData, Type dstData) {
-        List<Type> path = graph.shortestPath(srcData, dstData);
-        return path;
+    public static <Type> List<Type> shortestPath(List<Type> sources, List<Type> destinations, Type srcData,
+            Type dstData) throws IllegalArgumentException {
+        if (sources.size() != destinations.size()) {
+            throw new IllegalArgumentException("Sources list and destination list must be the same size");
+        }
+        Graph<Type> graph = buildGraphFromLists(sources, destinations);
+        return graph.shortestPath(srcData, dstData);
     }
 
     /**
      * Performs topological sorting on the vertices of the given graph.
      *
-     * @param graph  the graph to sort
-     * @param <Type> the data type of the vertices in the graph
+     * @param sources      a list of source vertices
+     * @param destinations a list of destination vertices
+     * @param <Type>       the data type of the vertices in the graph
      * @return a list representing the sorted vertices
+     * @throws IllegalArgumentException if the sources and destinations lists have
+     *                                  different sizes
      */
-    public static <Type> List<Type> sort(Graph<Type> graph) {
-        List<Type> sortedVertices = graph.sortVertices();
-        return sortedVertices;
+    public static <Type> List<Type> sort(List<Type> sources, List<Type> destinations) throws IllegalArgumentException {
+        if (sources.size() != destinations.size()) {
+            throw new IllegalArgumentException("Sources list and destination list must be the same size");
+        }
+        Graph<Type> graph = buildGraphFromLists(sources, destinations);
+        return graph.sortVertices();
+    }
+
+    /**
+     * Builds a graph based on the provided lists of source and destination
+     * vertices.
+     *
+     * @param sources      a list of source vertices
+     * @param destinations a list of destination vertices
+     * @param <Type>       the data type of the vertices in the graph
+     * @return a graph constructed from the provided vertex lists
+     */
+    private static <Type> Graph<Type> buildGraphFromLists(List<Type> sources, List<Type> destinations) {
+        Graph<Type> graph = new Graph<>();
+
+        for (int i = 0; i < sources.size(); i++) {
+            Type source = sources.get(i);
+            Type destination = destinations.get(i);
+            graph.addEdge(source, destination);
+        }
+
+        return graph;
     }
 
     /**
