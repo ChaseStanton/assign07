@@ -21,13 +21,13 @@ class Graph<Type> {
     /**
      * Adds a directed edge from the source vertex to the destination vertex.
      *
-     * @param source      the source vertex
-     * @param destination the destination vertex
+     * @param sourceData      the source vertex
+     * @param destinationData the destination vertex
      */
     public void addEdge(Type sourceData, Type destinationData) {
         Vertex<Type> sourceVertex = getOrCreateVertex(sourceData);
         Vertex<Type> destinationVertex = getOrCreateVertex(destinationData);
-        sourceVertex.addEdge(new Edge<>(destinationVertex));
+        sourceVertex.addEdge(destinationVertex);
     }
 
     // Helper method to get or create a vertex
@@ -76,10 +76,8 @@ class Graph<Type> {
         }
 
         visited.add(currentVertex);
-        List<Edge<Type>> edges = currentVertex.getEdges();
 
-        for (Edge<Type> edge : edges) {
-            Vertex<Type> neighbor = edge.getOtherVertex();
+        for (Vertex<Type> neighbor : currentVertex.getNeighbors()) {
             if (!visited.contains(neighbor)) {
                 if (dfs(neighbor, targetVertex, visited)) {
                     return true;
@@ -100,42 +98,50 @@ class Graph<Type> {
      * @throws IllegalArgumentException if no path is found between the two vertices
      */
     public List<Type> shortestPath(Type srcData, Type dstData) {
+        Vertex<Type> srcVertex = vertices.get(srcData);
+        Vertex<Type> dstVertex = vertices.get(dstData);
 
-        Queue<Type> queue = new LinkedList<>();
-        Map<Type, Type> previousVertex = new HashMap<>();
+        if (srcVertex == null || dstVertex == null) {
+            throw new IllegalArgumentException("Vertex not found in the graph");
+        }
 
-        queue.add(srcData);
-        previousVertex.put(srcData, null);
+        Map<Vertex<Type>, Vertex<Type>> previousVertex = new HashMap<>();
+        Queue<Vertex<Type>> queue = new LinkedList<>();
+
+        srcVertex.setDistanceFromStart(0);
+        queue.add(srcVertex);
 
         while (!queue.isEmpty()) {
-            Type currentVertex = queue.poll();
+            Vertex<Type> currentVertex = queue.poll();
 
-            if (currentVertex.equals(dstData)) {
-                List<Type> shortestPath = new ArrayList<>();
-                Type vertex = dstData;
-
-                while (vertex != null) {
-                    shortestPath.add(vertex);
-                    vertex = previousVertex.get(vertex);
-                }
-
-                Collections.reverse(shortestPath);
-                return shortestPath;
+            if (currentVertex.equals(dstVertex)) {
+                return reconstructShortestPath(previousVertex, srcVertex, dstVertex);
             }
 
-            List<Type> neighbors = adjList.get(currentVertex);
-
-            if (neighbors != null) {
-                for (Type neighbor : neighbors) {
-                    if (!previousVertex.containsKey(neighbor)) {
-                        previousVertex.put(neighbor, currentVertex);
-                        queue.add(neighbor);
-                    }
+            for (Vertex<Type> neighbor : currentVertex.getNeighbors()) {
+                int newDistance = currentVertex.getDistanceFromStart() + 1;
+                if (newDistance < neighbor.getDistanceFromStart()) {
+                    neighbor.setDistanceFromStart(newDistance);
+                    previousVertex.put(neighbor, currentVertex);
+                    queue.add(neighbor);
                 }
             }
         }
 
         throw new IllegalArgumentException("No path found between the two vertices");
+    }
+
+    private List<Type> reconstructShortestPath(Map<Vertex<Type>, Vertex<Type>> previousVertex, Vertex<Type> srcVertex, Vertex<Type> dstVertex) {
+        List<Type> shortestPath = new ArrayList<>();
+        Vertex<Type> vertex = dstVertex;
+
+        while (vertex != null) {
+            shortestPath.add(vertex.getData());
+            vertex = previousVertex.get(vertex);
+        }
+
+        Collections.reverse(shortestPath);
+        return shortestPath;
     }
 
     /**
@@ -145,34 +151,32 @@ class Graph<Type> {
      * @throws IllegalArgumentException if the graph contains a cycle
      */
     public List<Type> sortVertices() {
-        int numVertices = adjList.size();
+        int numVertices = vertices.size();
         int[] inDegrees = new int[numVertices];
-        Queue<Type> queue = new LinkedList<>();
+        Queue<Vertex<Type>> queue = new LinkedList<>();
         List<Type> sortedVertices = new ArrayList<>();
-    
-        // Calculate in-degrees for all vertices
-        for (List<Type> neighbors : adjList.values()) {
-            for (Type neighbor : neighbors) {
+
+        for (Vertex<Type> vertex : vertices.values()) {
+            for (Vertex<Type> neighbor : vertex.getNeighbors()) {
                 int neighborIndex = getIndex(neighbor);
                 if (neighborIndex != -1) {
                     inDegrees[neighborIndex]++;
                 }
             }
         }
-    
-        // Enqueue vertices with in-degrees 0
-        for (Type vertex : adjList.keySet()) {
+
+        for (Vertex<Type> vertex : vertices.values()) {
             int vertexIndex = getIndex(vertex);
             if (inDegrees[vertexIndex] == 0) {
                 queue.offer(vertex);
             }
         }
-    
+
         while (!queue.isEmpty()) {
-            Type vertex = queue.poll();
-            sortedVertices.add(vertex);
-    
-            for (Type neighbor : adjList.get(vertex)) {
+            Vertex<Type> vertex = queue.poll();
+            sortedVertices.add(vertex.getData());
+
+            for (Vertex<Type> neighbor : vertex.getNeighbors()) {
                 int neighborIndex = getIndex(neighbor);
                 if (neighborIndex != -1) {
                     inDegrees[neighborIndex]--;
@@ -182,15 +186,13 @@ class Graph<Type> {
                 }
             }
         }
-    
+
         if (sortedVertices.size() != numVertices) {
             throw new IllegalArgumentException("Graph contains a cycle");
         }
-    
+
         return sortedVertices;
     }
-    
-
 
     /**
      * Helper method to get the index of a vertex in the graph's adjacency list.
@@ -198,10 +200,10 @@ class Graph<Type> {
      * @param vertex the vertex to find the index of
      * @return the index of the vertex, or -1 if not found
      */
-    private int getIndex(Type vertex) {
+    private int getIndex(Vertex<Type> vertex) {
         int index = 0;
-        for (Type key : adjList.keySet()) {
-            if (key.equals(vertex)) {
+        for (Vertex<Type> v : vertices.values()) {
+            if (v.equals(vertex)) {
                 return index;
             }
             index++;
