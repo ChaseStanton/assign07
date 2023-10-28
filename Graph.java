@@ -135,49 +135,48 @@ class Graph<Type> {
         int[] inDegrees = new int[numVertices];
         Queue<Type> queue = new LinkedList<>();
         List<Type> sortedVertices = new ArrayList<>();
-
-        // Create a set to keep track of vertices with missing neighbors
-        Set<Type> verticesWithMissingNeighbors = new HashSet<>();
-
-        for (Type vertex : adjList.keySet()) {
-            for (Type neighbor : adjList.get(vertex)) {
+    
+        // Calculate in-degrees for all vertices
+        for (List<Type> neighbors : adjList.values()) {
+            for (Type neighbor : neighbors) {
                 int neighborIndex = getIndex(neighbor);
-                if (neighborIndex == -1) {
-                    verticesWithMissingNeighbors.add(vertex);
-                } else {
+                if (neighborIndex != -1) {
                     inDegrees[neighborIndex]++;
                 }
             }
-
         }
-
+    
+        // Enqueue vertices with in-degrees 0
         for (Type vertex : adjList.keySet()) {
-            if (inDegrees[getIndex(vertex)] == 0 && !verticesWithMissingNeighbors.contains(vertex)) {
-                queue.add(vertex);
+            int vertexIndex = getIndex(vertex);
+            if (inDegrees[vertexIndex] == 0) {
+                queue.offer(vertex);
             }
         }
-
+    
         while (!queue.isEmpty()) {
             Type vertex = queue.poll();
             sortedVertices.add(vertex);
-
+    
             for (Type neighbor : adjList.get(vertex)) {
                 int neighborIndex = getIndex(neighbor);
                 if (neighborIndex != -1) {
                     inDegrees[neighborIndex]--;
                     if (inDegrees[neighborIndex] == 0) {
-                        queue.add(neighbor);
+                        queue.offer(neighbor);
                     }
                 }
             }
         }
-
+    
         if (sortedVertices.size() != numVertices) {
             throw new IllegalArgumentException("Graph contains a cycle");
         }
-
+    
         return sortedVertices;
     }
+    
+
 
     /**
      * Helper method to get the index of a vertex in the graph's adjacency list.
