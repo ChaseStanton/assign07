@@ -9,13 +9,13 @@ import java.util.*;
  * @param <Type> the data type of the vertices in the graph
  */
 class Graph<Type> {
-    private Map<Type, List<Type>> adjList;
+    private Map<Type, Vertex<Type>> vertices;
 
     /**
      * Constructs an empty graph.
      */
     public Graph() {
-        adjList = new HashMap<>();
+        vertices = new HashMap<>();
     }
 
     /**
@@ -24,8 +24,20 @@ class Graph<Type> {
      * @param source      the source vertex
      * @param destination the destination vertex
      */
-    public void addEdge(Type source, Type destination) {
-        adjList.computeIfAbsent(source, k -> new ArrayList<>()).add(destination);
+    public void addEdge(Type sourceData, Type destinationData) {
+        Vertex<Type> sourceVertex = getOrCreateVertex(sourceData);
+        Vertex<Type> destinationVertex = getOrCreateVertex(destinationData);
+        sourceVertex.addEdge(new Edge<>(destinationVertex));
+    }
+
+    // Helper method to get or create a vertex
+    private Vertex<Type> getOrCreateVertex(Type data) {
+        Vertex<Type> vertex = vertices.get(data);
+        if (vertex == null) {
+            vertex = new Vertex<>(data);
+            vertices.put(data, vertex);
+        }
+        return vertex;
     }
 
     /**
@@ -38,12 +50,15 @@ class Graph<Type> {
      *                                  found in the graph
      */
     public boolean areConnected(Type srcData, Type dstData) {
-        if (!adjList.containsKey(srcData) || !adjList.containsKey(dstData)) {
+        Vertex<Type> srcVertex = vertices.get(srcData);
+        Vertex<Type> dstVertex = vertices.get(dstData);
+
+        if (srcVertex == null || dstVertex == null) {
             throw new IllegalArgumentException("Vertex not found in the graph");
         }
 
-        Set<Type> visited = new HashSet<>();
-        return dfs(srcData, dstData, visited);
+        Set<Vertex<Type>> visited = new HashSet<>();
+        return dfs(srcVertex, dstVertex, visited);
     }
 
     /**
@@ -55,20 +70,19 @@ class Graph<Type> {
      * @param visited       a set of visited vertices to avoid cycles
      * @return true if there is a path, false otherwise
      */
-    private boolean dfs(Type currentVertex, Type targetVertex, Set<Type> visited) {
+    private boolean dfs(Vertex<Type> currentVertex, Vertex<Type> targetVertex, Set<Vertex<Type>> visited) {
         if (currentVertex.equals(targetVertex)) {
             return true;
         }
 
         visited.add(currentVertex);
-        List<Type> neighbors = adjList.get(currentVertex);
+        List<Edge<Type>> edges = currentVertex.getEdges();
 
-        if (neighbors != null) {
-            for (Type neighbor : neighbors) {
-                if (!visited.contains(neighbor)) {
-                    if (dfs(neighbor, targetVertex, visited)) {
-                        return true;
-                    }
+        for (Edge<Type> edge : edges) {
+            Vertex<Type> neighbor = edge.getOtherVertex();
+            if (!visited.contains(neighbor)) {
+                if (dfs(neighbor, targetVertex, visited)) {
+                    return true;
                 }
             }
         }
