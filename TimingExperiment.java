@@ -10,7 +10,7 @@ public class TimingExperiment {
         int endN = 1000;
         int stepSize = 100;
 
-        System.out.println("N\tAreConnected(ms)\tShortestPath(ms)\tSort(ms)");
+        System.out.println("N\tAreConnected(ns)\tShortestPath(ns)\tSort(ns)");
 
         for (int N = startN; N <= endN; N += stepSize) {
             Graph<String> graph = createGraph(N);
